@@ -15,13 +15,13 @@ public class Constants {
       More here: https://api.imgur.com/
      */
     // TODO ADD CLIENT ID AND SECRET
-    public static final String MY_IMGUR_CLIENT_ID = "";
-    public static final String MY_IMGUR_CLIENT_SECRET = "";
+    public static final String MY_IMGUR_CLIENT_ID = "6f8db26a3dfcb37";
+    public static final String MY_IMGUR_CLIENT_SECRET = "e424653455ea1d2a9578ba03e0b72b370fef3f9d";
 
     /*
       Redirect URL for android.
      */
-    public static final String MY_IMGUR_REDIRECT_URL = "http://android";
+    public static final String MY_IMGUR_REDIRECT_URL = "http://www.nocturnal.cf";
 
     /*
       Client Auth
