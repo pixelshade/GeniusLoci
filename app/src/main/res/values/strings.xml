@@ -12,4 +12,7 @@
     <string name="notification_share_link">Share link</string>
     <string name="notifaction_success">Successfully uploaded</string>
     <string name="notification_progress">Uploading image...</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="btn_stop_location_updates">Stop location Updates</string>
+    <string name="btn_start_location_updates">Btn start location updates</string>
 </resources>
