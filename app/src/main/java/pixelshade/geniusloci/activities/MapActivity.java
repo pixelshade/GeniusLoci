@@ -21,7 +21,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pixelshade.geniusloci.R;
+import pixelshade.geniusloci.helpers.IntentHelper;
 
 public class MapActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener {
@@ -52,13 +55,13 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     @Bind(R.id.btnShowLocation)
     Button btnShowLocation;
     @Bind(R.id.btnLocationUpdates)
-    Button btnStartLocationUpdates;
+    Button btnLocationUpdates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_map);
+        ButterKnife.bind(this);
 
         // First we need to check availability of play services
         if (checkPlayServices()) {
@@ -69,25 +72,29 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
             createLocationRequest();
         }
 
-        // Show location button click listener
-        btnShowLocation.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                displayLocation();
-            }
-        });
 
-        // Toggling the periodic location updates
-        btnStartLocationUpdates.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                togglePeriodicLocationUpdates();
-            }
-        });
+
+
+
+
 
     }
+
+    // Show location button click listener
+    @OnClick(R.id.btnShowLocation)
+    public void onShowLocation() {
+        displayLocation();
+    }
+
+    // Toggling the periodic location updates
+    @OnClick(R.id.btnLocationUpdates)
+    public void onStartLocationUpdates() {
+        togglePeriodicLocationUpdates();
+    }
+
+
 
     @Override
     protected void onStart() {
@@ -150,7 +157,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     private void togglePeriodicLocationUpdates() {
         if (!mRequestingLocationUpdates) {
             // Changing the button text
-            btnStartLocationUpdates
+            btnLocationUpdates
                     .setText(getString(R.string.btn_stop_location_updates));
 
             mRequestingLocationUpdates = true;
@@ -162,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
         } else {
             // Changing the button text
-            btnStartLocationUpdates
+            btnLocationUpdates
                     .setText(getString(R.string.btn_start_location_updates));
 
             mRequestingLocationUpdates = false;
