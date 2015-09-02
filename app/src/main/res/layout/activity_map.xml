@@ -37,4 +37,13 @@
         android:layout_alignRight="@+id/btnShowLocation"
         android:layout_alignEnd="@+id/btnShowLocation" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Ghost"
+        android:id="@+id/btnAddGhost"
+        android:layout_below="@+id/btnLocationUpdates"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="63dp" />
+
 </RelativeLayout>

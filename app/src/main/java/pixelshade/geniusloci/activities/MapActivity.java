@@ -1,5 +1,6 @@
 package pixelshade.geniusloci.activities;
 
+import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,6 +57,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     Button btnShowLocation;
     @Bind(R.id.btnLocationUpdates)
     Button btnLocationUpdates;
+    @Bind(R.id.btnAddGhost)
+    Button btnAddGhost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +75,13 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
             createLocationRequest();
         }
 
+    }
 
 
-
-
-
-
-
-
+    @OnClick(R.id.btnAddGhost)
+    public void startUploadActivity(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
     }
 
     // Show location button click listener
