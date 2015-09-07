@@ -109,13 +109,19 @@ public class MainActivity extends AppCompatActivity {
     /*
       Create the @Upload object
      */
-        if (chosenFile == null) return;
-        createUpload(chosenFile);
+        if (chosenFile == null) {
 
-    /*
-      Start upload
-     */
-        new UploadService(this).Execute(upload, new UiCallback());
+
+        } else {
+            // we are uploading image to imgur
+            createUpload(chosenFile);
+            new UploadService(this).Execute(upload, new UiCallback());
+        }
+    }
+
+
+    private void PostToServer(){
+
     }
 
     private void createUpload(File image) {

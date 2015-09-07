@@ -22,6 +22,7 @@ public class Constants {
       Redirect URL for android.
      */
     public static final String MY_IMGUR_REDIRECT_URL = "http://www.nocturnal.cf";
+    public static final String SERVER_URL = "http://www.nocturnal.cf:1337/";
 
     /*
       Client Auth
