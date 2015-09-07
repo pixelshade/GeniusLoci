@@ -9,6 +9,9 @@ import pixelshade.geniusloci.helpers.NotificationHelper;
 import pixelshade.geniusloci.imgurmodel.ImageResponse;
 import pixelshade.geniusloci.imgurmodel.ImgurAPI;
 import pixelshade.geniusloci.imgurmodel.Upload;
+import pixelshade.geniusloci.model.GhostEntry;
+import pixelshade.geniusloci.model.ServerAPI;
+import pixelshade.geniusloci.model.ServerNewEntryResponse;
 import pixelshade.geniusloci.utils.NetworkUtils;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -17,21 +20,19 @@ import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 /**
- * Created by AKiniyalocts on 1/12/15.
- * <p/>
- * Our upload service. This creates our restadapter, uploads our image, and notifies us of the response.
+ * Created by pixelshade on 8.9.2015.
  */
-public class UploadService {
-    public final static String TAG = UploadService.class.getSimpleName();
+public class ServerApiService {
+    public final static String TAG = UploadImageService.class.getSimpleName();
 
     private WeakReference<Context> mContext;
 
-    public UploadService(Context context) {
+    public ServerApiService(Context context) {
         this.mContext = new WeakReference<>(context);
     }
 
-    public void Execute(Upload upload, Callback<ImageResponse> callback) {
-        final Callback<ImageResponse> cb = callback;
+    public void Execute(GhostEntry ghostEntry, Callback<ServerNewEntryResponse> callback) {
+        final Callback<ServerNewEntryResponse> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             //Callback will be called, so we prevent a unnecessary notification
@@ -44,17 +45,14 @@ public class UploadService {
 
         RestAdapter restAdapter = buildRestAdapter();
 
-        restAdapter.create(ImgurAPI.class).postImage(
+        restAdapter.create(ServerAPI.class).postEntry(
                 Constants.getClientAuth(),
-                upload.title,
-                upload.description,
-                upload.albumId,
-                null,
-                new TypedFile("image/*", upload.image),
-                new Callback<ImageResponse>() {
+                ghostEntry.name,
+                ghostEntry.content,
+                new Callback<ServerNewEntryResponse>() {
                     @Override
-                    public void success(ImageResponse imageResponse, Response response) {
-                        if (cb != null) cb.success(imageResponse, response);
+                    public void success(ServerNewEntryResponse serverNewResponse, Response response) {
+                        if (cb != null) cb.success(serverNewResponse, response);
                         if (response == null) {
                             /*
                              Notify image was NOT uploaded successfully
@@ -65,8 +63,8 @@ public class UploadService {
                         /*
                         Notify image was uploaded successfully
                         */
-                        if (imageResponse.success) {
-                            notificationHelper.createUploadedNotification(imageResponse);
+                        if (serverNewResponse.success) {
+                            notificationHelper.createNewEntryNotification(serverNewResponse);
                         }
                     }
 
@@ -78,16 +76,16 @@ public class UploadService {
                 });
     }
 
-    private RestAdapter buildRestAdapter() {
-        RestAdapter imgurAdapter = new RestAdapter.Builder()
-                .setEndpoint(ImgurAPI.server)
-                .build();
 
+    private RestAdapter buildRestAdapter() {
+        RestAdapter serverAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constants.SERVER_URL)
+                .build();
         /*
         Set rest adapter logging if we're already logging
         */
         if (Constants.LOGGING)
-            imgurAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        return imgurAdapter;
+            serverAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
+        return serverAdapter;
     }
 }

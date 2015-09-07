@@ -16,6 +16,9 @@ import java.io.File;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pixelshade.geniusloci.model.GhostEntry;
+import pixelshade.geniusloci.model.ServerNewEntryResponse;
+import pixelshade.geniusloci.services.ServerApiService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -25,7 +28,7 @@ import pixelshade.geniusloci.helpers.DocumentHelper;
 import pixelshade.geniusloci.helpers.IntentHelper;
 import pixelshade.geniusloci.imgurmodel.ImageResponse;
 import pixelshade.geniusloci.imgurmodel.Upload;
-import pixelshade.geniusloci.services.UploadService;
+import pixelshade.geniusloci.services.UploadImageService;
 
 
 
@@ -110,18 +113,23 @@ public class MainActivity extends AppCompatActivity {
       Create the @Upload object
      */
         if (chosenFile == null) {
-
+            GhostEntry entry = createEntry();
+            new ServerApiService(this).Execute(entry, new UiServerApiCallback());
 
         } else {
             // we are uploading image to imgur
             createUpload(chosenFile);
-            new UploadService(this).Execute(upload, new UiCallback());
+            new UploadImageService(this).Execute(upload, new UiCallback());
         }
     }
 
 
-    private void PostToServer(){
+    private GhostEntry createEntry() {
+        GhostEntry entry = new GhostEntry();
 
+        entry.name = uploadTitle.getText().toString();
+        entry.content= uploadDesc.getText().toString();
+        return entry;
     }
 
     private void createUpload(File image) {
@@ -131,6 +139,24 @@ public class MainActivity extends AppCompatActivity {
         upload.title = uploadTitle.getText().toString();
         upload.description = uploadDesc.getText().toString();
     }
+
+    private class UiServerApiCallback implements Callback<ServerNewEntryResponse> {
+
+        @Override
+        public void success(ServerNewEntryResponse serverNewEntryResponse, Response response) {
+            clearInput();
+        }
+
+
+        @Override
+        public void failure(RetrofitError error) {
+            //Assume we have no connection, since error is null
+            if (error == null) {
+                Snackbar.make(findViewById(R.id.rootView), "No internet connection", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private class UiCallback implements Callback<ImageResponse> {
 
