@@ -46,7 +46,6 @@ public class ServerApiService {
         RestAdapter restAdapter = buildRestAdapter();
 
         restAdapter.create(ServerAPI.class).postEntry(
-                Constants.getClientAuth(),
                 ghostEntry.name,
                 ghostEntry.content,
                 new Callback<ServerNewEntryResponse>() {
@@ -63,15 +62,16 @@ public class ServerApiService {
                         /*
                         Notify image was uploaded successfully
                         */
-                        if (serverNewResponse.success) {
-                            notificationHelper.createNewEntryNotification(serverNewResponse);
+                        if (serverNewResponse != null) {
+                            notificationHelper.createNotification(serverNewResponse.name, serverNewResponse.content);
                         }
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         if (cb != null) cb.failure(error);
-                        notificationHelper.createFailedUploadNotification();
+                        notificationHelper.createNotification(error.getKind().toString(),error.getCause().getLocalizedMessage());
+//                        notificationHelper.createFailedUploadNotification();
                     }
                 });
     }

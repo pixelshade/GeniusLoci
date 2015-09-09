@@ -20,16 +20,14 @@ public interface ServerAPI {
      */
 
     /**
-     * @param auth        #Type of authorization for upload
      * @param title       #Title of image
      * @param description #Description of image
      * @param cb          Callback used for success/failures
      */
-    @POST("/3/image")
+    @POST("/ghost")
     void postEntry(
-            @Header("Authorization") String auth,
-            @Query("title") String title,
-            @Query("description") String description,
+            @Query("name") String title,
+            @Query("content") String description,
             Callback<ServerNewEntryResponse> cb
     );
 }

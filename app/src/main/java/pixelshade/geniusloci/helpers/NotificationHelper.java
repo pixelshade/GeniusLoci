@@ -34,19 +34,19 @@ public class NotificationHelper {
         mBuilder.setSmallIcon(android.R.drawable.ic_menu_gallery);
         mBuilder.setContentTitle(mContext.get().getString(R.string.notifaction_success));
 
-        mBuilder.setContentText(response.data.name);
+        mBuilder.setContentText(response.name);
 
         mBuilder.setColor(mContext.get().getResources().getColor(R.color.primary));
 
 
-        Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(response.data.name));
+        Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(response.name));
         PendingIntent intent = PendingIntent.getActivity(mContext.get(), 0, resultIntent, 0);
         mBuilder.setContentIntent(intent);
         mBuilder.setAutoCancel(true);
 
-        Intent shareIntent = new Intent(Intent.ACTION_SEND, Uri.parse(response.data.name));
+        Intent shareIntent = new Intent(Intent.ACTION_SEND, Uri.parse(response.name));
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, response.data.name);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, response.name);
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pIntent = PendingIntent.getActivity(mContext.get(), 0, shareIntent, 0);
@@ -101,6 +101,23 @@ public class NotificationHelper {
         PendingIntent pIntent = PendingIntent.getActivity(mContext.get(), 0, shareIntent, 0);
         mBuilder.addAction(new NotificationCompat.Action(R.drawable.abc_ic_menu_share_mtrl_alpha,
                 mContext.get().getString(R.string.notification_share_link), pIntent));
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.get().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(mContext.get().getString(R.string.app_name).hashCode(), mBuilder.build());
+    }
+
+    public void createNotification(String title, String text){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext.get());
+        mBuilder.setSmallIcon(android.R.drawable.ic_dialog_alert);
+        mBuilder.setContentTitle(title);
+        mBuilder.setContentText(text);
+
+
+        mBuilder.setColor(mContext.get().getResources().getColor(R.color.primary));
+
+        mBuilder.setAutoCancel(true);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.get().getSystemService(Context.NOTIFICATION_SERVICE);
