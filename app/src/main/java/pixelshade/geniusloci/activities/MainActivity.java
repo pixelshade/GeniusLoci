@@ -131,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
         GhostEntry entry = new GhostEntry();
 
         if(uploadTitle.getText().toString().isEmpty()){
-            uploadDesc.setError("name cannot be empty");
+            uploadDesc.setError("Name cannot be empty");
         }
 
         if(uploadDesc.getText().toString().isEmpty()){
-            uploadDesc.setError("content cannot be empty");
+            uploadDesc.setError("Content cannot be empty");
         }
         if(uploadTitle.getText().toString().isEmpty() || uploadDesc.getText().toString().isEmpty()) return null;
 
