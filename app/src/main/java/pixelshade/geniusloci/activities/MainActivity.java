@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
      */
         if (chosenFile == null) {
             GhostEntry entry = createEntry();
+            if(entry == null) return;
+
             new ServerApiService(this).Execute(entry, new UiServerApiCallback());
 
         } else {
@@ -124,11 +126,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private GhostEntry createEntry() {
         GhostEntry entry = new GhostEntry();
 
+        if(uploadTitle.getText().toString().isEmpty()){
+            uploadDesc.setError("name cannot be empty");
+        }
+
+        if(uploadDesc.getText().toString().isEmpty()){
+            uploadDesc.setError("content cannot be empty");
+        }
+        if(uploadTitle.getText().toString().isEmpty() || uploadDesc.getText().toString().isEmpty()) return null;
+
         entry.name = uploadTitle.getText().toString();
         entry.content= uploadDesc.getText().toString();
+
+
+
         return entry;
     }
 
