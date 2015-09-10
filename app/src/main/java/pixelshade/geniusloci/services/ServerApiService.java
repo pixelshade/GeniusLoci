@@ -3,6 +3,7 @@ package pixelshade.geniusloci.services;
 import android.content.Context;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import pixelshade.geniusloci.Constants;
 import pixelshade.geniusloci.helpers.NotificationHelper;
@@ -65,7 +66,7 @@ public class ServerApiService {
                     @Override
                     public void failure(RetrofitError error) {
                         if (cb != null) cb.failure(error);
-                        notificationHelper.createNotification(error.getKind().toString(), error.getCause().getLocalizedMessage());
+                        notificationHelper.createNotification(error.getKind().toString(), error.getMessage());
 //                        notificationHelper.createFailedUploadNotification();
                     }
                 });
@@ -86,10 +87,7 @@ public class ServerApiService {
         RestAdapter restAdapter = buildRestAdapter();
 
         restAdapter.create(ServerAPI.class).postEntry(
-                ghostEntry.name,
-                ghostEntry.content,
-                ghostEntry.longitude,
-                ghostEntry.latitude,
+                ghostEntry,
                 new Callback<ServerNewEntryResponse>() {
                     @Override
                     public void success(ServerNewEntryResponse serverNewResponse, Response response) {
@@ -112,14 +110,15 @@ public class ServerApiService {
                     @Override
                     public void failure(RetrofitError error) {
                         if (cb != null) cb.failure(error);
-                        notificationHelper.createNotification(error.getKind().toString(), error.getCause().getLocalizedMessage());
+                        notificationHelper.createNotification(error.getKind().toString(), error.getMessage());
+
 //                        notificationHelper.createFailedUploadNotification();
                     }
                 });
     }
 
-    public void GetAllEntries(Callback<ServerListGhostsResponse> callback) {
-        final Callback<ServerListGhostsResponse> cb = callback;
+    public void GetAllEntries(Callback<List<GhostEntry>> callback) {
+        final Callback<List<GhostEntry>> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             //Callback will be called, so we prevent a unnecessary notification
@@ -133,10 +132,10 @@ public class ServerApiService {
         RestAdapter restAdapter = buildRestAdapter();
 
         restAdapter.create(ServerAPI.class).getAll(
-                new Callback<ServerListGhostsResponse>() {
+                new Callback<List<GhostEntry>>() {
                     @Override
-                    public void success(ServerListGhostsResponse serverListedEntriesResponse, Response response) {
-                        if (cb != null) cb.success(serverListedEntriesResponse, response);
+                    public void success(List<GhostEntry> entries, Response response) {
+                        if (cb != null) cb.success(entries, response);
                         if (response == null) {
                             /*
                              Notify image was NOT uploaded successfully
@@ -147,8 +146,8 @@ public class ServerApiService {
                         /*
                         Notify image was uploaded successfully
                         */
-                        if (serverListedEntriesResponse != null) {
-                            notificationHelper.createNotification("found ghosts:"+serverListedEntriesResponse.ghostEntries.size(),"");
+                        if (entries != null) {
+                            notificationHelper.createNotification("found ghosts:"+entries.size(),"");
                         }
                     }
 

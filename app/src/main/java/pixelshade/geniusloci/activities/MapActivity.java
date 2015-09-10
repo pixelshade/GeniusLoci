@@ -23,6 +23,8 @@ import com.google.android.gms.location.LocationServices;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -92,8 +94,22 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
     @OnClick(R.id.btnAddGhost)
     public void startUploadActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            double latitude = mLastLocation.getLatitude();
+            double longitude = mLastLocation.getLongitude();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("lat", latitude);
+            intent.putExtra("lon",longitude);
+            startActivity(intent);
+
+        } else {
+
+            lblLocation
+                    .setText("(Couldn't get the location. Make sure location is enabled on the device)");
+        }
     }
 
     // Show location button click listener
@@ -111,13 +127,13 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
     @OnClick(R.id.getAllBtn)
     public void getAllEntries() {
-        new ServerApiService(this).GetAllEntries(new Callback<ServerListGhostsResponse>() {
+        new ServerApiService(this).GetAllEntries(new Callback<List<GhostEntry>>() {
             @Override
-            public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
+            public void success(List<GhostEntry> serverListGhostsResponse, Response response) {
                 String resp = response.getBody().toString();
                 if (serverListGhostsResponse != null) {
                     resp += "\n";
-                    for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
+                    for (GhostEntry entry : serverListGhostsResponse) {
                         resp += entry.name + '\n';
                         resp += entry.content + "\n";
                         resp += "-------------------" + '\n';
@@ -139,25 +155,25 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                 latitude,
                 longtitude,
                 new Callback<ServerListGhostsResponse>() {
-            @Override
-            public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
-                String resp = response.getBody().toString();
-                if (serverListGhostsResponse != null) {
-                    resp += "\n";
-                    for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
-                        resp += entry.name + '\n';
-                        resp += entry.content + "\n";
-                        resp += "-------------------" + '\n';
+                    @Override
+                    public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
+                        String resp = response.getBody().toString();
+                        if (serverListGhostsResponse != null) {
+                            resp += "\n";
+                            for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
+                                resp += entry.name + '\n';
+                                resp += entry.content + "\n";
+                                resp += "-------------------" + '\n';
+                            }
+                        }
+                        tvResponse.setText(resp);
                     }
-                }
-                tvResponse.setText(resp);
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-                tvResponse.setText(error.getCause().getLocalizedMessage());
-            }
-        });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        tvResponse.setText(error.getMessage());
+                    }
+                });
     }
 
     @Override

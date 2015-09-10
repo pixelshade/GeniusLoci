@@ -1,5 +1,7 @@
 package pixelshade.geniusloci.model;
 
+import java.util.List;
+
 import pixelshade.geniusloci.imgurmodel.ImageResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -27,16 +29,14 @@ public interface ServerAPI {
      */
     @POST("/ghost")
     void postEntry(
-            @Query("name") String title,
-            @Query("content") String description,
-            @Query("longitude") double longitude,
-            @Query("latitude") double latitude,
+            @Body GhostEntry coordinates,
+
             Callback<ServerNewEntryResponse> cb
     );
 
     @GET("/ghost")
     void getAll(
-            Callback<ServerListGhostsResponse> cb
+            Callback<List<GhostEntry>> cb
     );
     @GET("/ghost/findNear")
     void getNear(

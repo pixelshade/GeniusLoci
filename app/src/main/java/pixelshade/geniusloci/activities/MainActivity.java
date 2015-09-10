@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pixelshade.geniusloci.model.Coordinates;
 import pixelshade.geniusloci.model.GhostEntry;
 import pixelshade.geniusloci.model.ServerListGhostsResponse;
 import pixelshade.geniusloci.model.ServerNewEntryResponse;
@@ -36,6 +38,9 @@ import pixelshade.geniusloci.services.UploadImageService;
 
 public class MainActivity extends AppCompatActivity {
     public final static String TAG = MainActivity.class.getSimpleName();
+
+    private double mLatitude = 9;
+    private double mLongitude = 9;
 
     /*
       These annotations are for ButterKnife by Jake Wharton
@@ -60,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Intent intent = getIntent();
+        mLatitude = intent.getDoubleExtra("lat",9);
+        mLongitude = intent.getDoubleExtra("lon",9);
         setSupportActionBar(toolbar);
     }
 
@@ -95,7 +103,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    @OnClick(R.id.btnGoToMap)
+    public void goToMap(View v){
+        Intent intent = new Intent(MainActivity.this, MapActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 
     @OnClick(R.id.imageview)
@@ -120,8 +133,10 @@ public class MainActivity extends AppCompatActivity {
     /*
       Create the @Upload object
      */
+
+
         if (chosenFile == null) {
-            GhostEntry entry = createEntry();
+            GhostEntry entry = createEntry(mLongitude,mLatitude);
             if(entry == null) return;
 
             new ServerApiService(this).PostEntry(entry, new UiServerApiCallback());
@@ -135,9 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private GhostEntry createEntry() {
-        GhostEntry entry = new GhostEntry();
-
+    private GhostEntry createEntry(double longitude, double latitude) {
         if(uploadTitle.getText().toString().isEmpty()){
             uploadDesc.setError("Name cannot be empty");
         }
@@ -147,9 +160,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if(uploadTitle.getText().toString().isEmpty() || uploadDesc.getText().toString().isEmpty()) return null;
 
-        entry.name = uploadTitle.getText().toString();
-        entry.content= uploadDesc.getText().toString();
-
+        GhostEntry entry = new GhostEntry(
+                uploadTitle.getText().toString(),
+                uploadDesc.getText().toString(),
+                longitude,
+                latitude
+        );
 
 
         return entry;
