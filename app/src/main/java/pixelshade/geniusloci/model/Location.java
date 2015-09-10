@@ -6,11 +6,11 @@ import java.util.List;
 /**
  * Created by pixelshade on 10.9.2015.
  */
-public class Coordinates {
+public class Location {
     public String type = "Point";
     public List<Double> coordinates;
 
-    public Coordinates(double longtitude, double latitude){
+    public Location(double longtitude, double latitude){
         coordinates = new ArrayList<>();
         coordinates.add(longtitude);
         coordinates.add(latitude);

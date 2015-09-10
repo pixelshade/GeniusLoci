@@ -13,14 +13,11 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pixelshade.geniusloci.model.Coordinates;
 import pixelshade.geniusloci.model.GhostEntry;
-import pixelshade.geniusloci.model.ServerListGhostsResponse;
 import pixelshade.geniusloci.model.ServerNewEntryResponse;
 import pixelshade.geniusloci.services.ServerApiService;
 import retrofit.Callback;
