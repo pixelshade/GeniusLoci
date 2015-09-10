@@ -33,8 +33,8 @@ public class ServerApiService {
         this.mContext = new WeakReference<>(context);
     }
 
-    public void GetNear(double longitude, double latitude, Callback<ServerListGhostsResponse> callback) {
-        final Callback<ServerListGhostsResponse> cb = callback;
+    public void GetNear(double longitude, double latitude, Callback<List<GhostEntry>> callback) {
+        final Callback<List<GhostEntry>> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             //Callback will be called, so we prevent a unnecessary notification
@@ -50,9 +50,9 @@ public class ServerApiService {
         restAdapter.create(ServerAPI.class).getNear(
                 longitude,
                 latitude,
-                new Callback<ServerListGhostsResponse>() {
+                new Callback<List<GhostEntry>>() {
                     @Override
-                    public void success(ServerListGhostsResponse serverEntryListResponse, Response response) {
+                    public void success(List<GhostEntry> serverEntryListResponse, Response response) {
                         if (cb != null) cb.success(serverEntryListResponse, response);
                         if (response == null) {
                             /*

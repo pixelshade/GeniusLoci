@@ -154,13 +154,13 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
         new ServerApiService(this).GetNear(
                 latitude,
                 longtitude,
-                new Callback<ServerListGhostsResponse>() {
+                new Callback<List<GhostEntry>>() {
                     @Override
-                    public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
+                    public void success(List<GhostEntry> serverListGhostsResponse, Response response) {
                         String resp = response.getBody().toString();
                         if (serverListGhostsResponse != null) {
                             resp += "\n";
-                            for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
+                            for (GhostEntry entry : serverListGhostsResponse) {
                                 resp += entry.name + '\n';
                                 resp += entry.content + "\n";
                                 resp += "-------------------" + '\n';
