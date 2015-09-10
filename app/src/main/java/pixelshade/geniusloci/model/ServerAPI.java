@@ -38,7 +38,7 @@ public interface ServerAPI {
     void getAll(
             Callback<List<GhostEntry>> cb
     );
-    @GET("/ghost/findNear")
+    @GET("/ghost/getNear")
     void getNear(
             @Query("longitude") double longitude,
             @Query("latitude") double latitutde,
