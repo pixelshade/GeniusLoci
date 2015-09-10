@@ -11,6 +11,7 @@ import pixelshade.geniusloci.imgurmodel.ImgurAPI;
 import pixelshade.geniusloci.imgurmodel.Upload;
 import pixelshade.geniusloci.model.GhostEntry;
 import pixelshade.geniusloci.model.ServerAPI;
+import pixelshade.geniusloci.model.ServerListGhostsResponse;
 import pixelshade.geniusloci.model.ServerNewEntryResponse;
 import pixelshade.geniusloci.utils.NetworkUtils;
 import retrofit.Callback;
@@ -23,7 +24,7 @@ import retrofit.mime.TypedFile;
  * Created by pixelshade on 8.9.2015.
  */
 public class ServerApiService {
-    public final static String TAG = UploadImageService.class.getSimpleName();
+    public final static String TAG = ServerApiService.class.getSimpleName();
 
     private WeakReference<Context> mContext;
 
@@ -31,7 +32,7 @@ public class ServerApiService {
         this.mContext = new WeakReference<>(context);
     }
 
-    public void Execute(GhostEntry ghostEntry, Callback<ServerNewEntryResponse> callback) {
+    public void PostEntry(GhostEntry ghostEntry, Callback<ServerNewEntryResponse> callback) {
         final Callback<ServerNewEntryResponse> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
@@ -70,12 +71,54 @@ public class ServerApiService {
                     @Override
                     public void failure(RetrofitError error) {
                         if (cb != null) cb.failure(error);
-                        notificationHelper.createNotification(error.getKind().toString(),error.getCause().getLocalizedMessage());
+                        notificationHelper.createNotification(error.getKind().toString(), error.getCause().getLocalizedMessage());
 //                        notificationHelper.createFailedUploadNotification();
                     }
                 });
     }
 
+    public void GetAllEntries(Callback<ServerListGhostsResponse> callback) {
+        final Callback<ServerListGhostsResponse> cb = callback;
+
+        if (!NetworkUtils.isConnected(mContext.get())) {
+            //Callback will be called, so we prevent a unnecessary notification
+            cb.failure(null);
+            return;
+        }
+
+        final NotificationHelper notificationHelper = new NotificationHelper(mContext.get());
+        notificationHelper.createUploadingNotification();
+
+        RestAdapter restAdapter = buildRestAdapter();
+
+        restAdapter.create(ServerAPI.class).getAll(
+                new Callback<ServerListGhostsResponse>() {
+                    @Override
+                    public void success(ServerListGhostsResponse serverListedEntriesResponse, Response response) {
+                        if (cb != null) cb.success(serverListedEntriesResponse, response);
+                        if (response == null) {
+                            /*
+                             Notify image was NOT uploaded successfully
+                            */
+                            notificationHelper.createFailedUploadNotification();
+                            return;
+                        }
+                        /*
+                        Notify image was uploaded successfully
+                        */
+                        if (serverListedEntriesResponse != null) {
+                            notificationHelper.createNotification("found ghosts:"+serverListedEntriesResponse.ghostEntries.size(),"");
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (cb != null) cb.failure(error);
+                        notificationHelper.createNotification(error.getKind().toString(),error.getCause().getLocalizedMessage());
+//                        notificationHelper.createFailedUploadNotification();
+                    }
+                });
+    }
 
     private RestAdapter buildRestAdapter() {
         RestAdapter serverAdapter = new RestAdapter.Builder()

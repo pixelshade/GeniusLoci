@@ -3,6 +3,7 @@ package pixelshade.geniusloci.model;
 import pixelshade.geniusloci.imgurmodel.ImageResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.Query;
@@ -29,5 +30,15 @@ public interface ServerAPI {
             @Query("name") String title,
             @Query("content") String description,
             Callback<ServerNewEntryResponse> cb
+    );
+    @GET("/ghost")
+    void getAll(
+            Callback<ServerListGhostsResponse> cb
+    );
+    @GET("/ghost/findNear/{}")
+    void findNear(
+            @Query("lat") String latitutde,
+            @Query("lon") String longtitude,
+            Callback<ServerListGhostsResponse> cb
     );
 }
