@@ -15,4 +15,9 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="btn_stop_location_updates">Stop location Updates</string>
     <string name="btn_start_location_updates">Btn start location updates</string>
+
+    <string name="title_activity_splashscreen">SplashscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="genius_loci">Genius Loci</string>
 </resources>

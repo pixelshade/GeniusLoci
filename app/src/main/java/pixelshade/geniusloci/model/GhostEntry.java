@@ -1,11 +1,15 @@
 package pixelshade.geniusloci.model;
 
+import org.json.JSONObject;
+
 /**
  * Created by pixelshade on 8.9.2015.
  */
 public class GhostEntry {
     public String name;
     public String content;
+    public double longitude;
+    public double latitude;
 
     public String getName() {
         return name;
@@ -13,5 +17,14 @@ public class GhostEntry {
 
     public String getContent() {
         return content;
+    }
+
+    public GhostEntry(){}
+
+    public GhostEntry(String name, String content, double longitude, double latitude){
+        this.name = name;
+        this.content = content;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

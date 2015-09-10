@@ -21,11 +21,19 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.w3c.dom.Text;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pixelshade.geniusloci.R;
 import pixelshade.geniusloci.helpers.IntentHelper;
+import pixelshade.geniusloci.model.GhostEntry;
+import pixelshade.geniusloci.model.ServerListGhostsResponse;
+import pixelshade.geniusloci.services.ServerApiService;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MapActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener {
@@ -59,6 +67,10 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     Button btnLocationUpdates;
     @Bind(R.id.btnAddGhost)
     Button btnAddGhost;
+    @Bind(R.id.getAllBtn)
+    Button btnGetAll;
+    @Bind(R.id.responseTV)
+    TextView tvResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +91,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
 
     @OnClick(R.id.btnAddGhost)
-    public void startUploadActivity(){
-        Intent intent = new Intent(this,MainActivity.class);
+    public void startUploadActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -97,6 +109,56 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     }
 
 
+    @OnClick(R.id.getAllBtn)
+    public void getAllEntries() {
+        new ServerApiService(this).GetAllEntries(new Callback<ServerListGhostsResponse>() {
+            @Override
+            public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
+                String resp = response.getBody().toString();
+                if (serverListGhostsResponse != null) {
+                    resp += "\n";
+                    for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
+                        resp += entry.name + '\n';
+                        resp += entry.content + "\n";
+                        resp += "-------------------" + '\n';
+                    }
+                }
+                tvResponse.setText(resp);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvResponse.setText(error.getCause().getLocalizedMessage());
+            }
+        });
+
+    }
+
+    private void getNearEntries(double longtitude, double latitude) {
+        new ServerApiService(this).GetNear(
+                latitude,
+                longtitude,
+                new Callback<ServerListGhostsResponse>() {
+            @Override
+            public void success(ServerListGhostsResponse serverListGhostsResponse, Response response) {
+                String resp = response.getBody().toString();
+                if (serverListGhostsResponse != null) {
+                    resp += "\n";
+                    for (GhostEntry entry : serverListGhostsResponse.ghostEntries) {
+                        resp += entry.name + '\n';
+                        resp += entry.content + "\n";
+                        resp += "-------------------" + '\n';
+                    }
+                }
+                tvResponse.setText(resp);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvResponse.setText(error.getCause().getLocalizedMessage());
+            }
+        });
+    }
 
     @Override
     protected void onStart() {
@@ -145,7 +207,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
             double longitude = mLastLocation.getLongitude();
 
             lblLocation.setText(latitude + ", " + longitude);
-
+            getNearEntries(latitude,longitude);
         } else {
 
             lblLocation

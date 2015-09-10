@@ -32,6 +32,45 @@ public class ServerApiService {
         this.mContext = new WeakReference<>(context);
     }
 
+    public void GetNear(double longitude, double latitude, Callback<ServerListGhostsResponse> callback) {
+        final Callback<ServerListGhostsResponse> cb = callback;
+
+        if (!NetworkUtils.isConnected(mContext.get())) {
+            //Callback will be called, so we prevent a unnecessary notification
+            cb.failure(null);
+            return;
+        }
+
+        final NotificationHelper notificationHelper = new NotificationHelper(mContext.get());
+        notificationHelper.createUploadingNotification();
+
+        RestAdapter restAdapter = buildRestAdapter();
+
+        restAdapter.create(ServerAPI.class).getNear(
+                longitude,
+                latitude,
+                new Callback<ServerListGhostsResponse>() {
+                    @Override
+                    public void success(ServerListGhostsResponse serverEntryListResponse, Response response) {
+                        if (cb != null) cb.success(serverEntryListResponse, response);
+                        if (response == null) {
+                            /*
+                             Notify image was NOT uploaded successfully
+                            */
+                            notificationHelper.createFailedUploadNotification();
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (cb != null) cb.failure(error);
+                        notificationHelper.createNotification(error.getKind().toString(), error.getCause().getLocalizedMessage());
+//                        notificationHelper.createFailedUploadNotification();
+                    }
+                });
+    }
+
     public void PostEntry(GhostEntry ghostEntry, Callback<ServerNewEntryResponse> callback) {
         final Callback<ServerNewEntryResponse> cb = callback;
 
@@ -49,6 +88,8 @@ public class ServerApiService {
         restAdapter.create(ServerAPI.class).postEntry(
                 ghostEntry.name,
                 ghostEntry.content,
+                ghostEntry.longitude,
+                ghostEntry.latitude,
                 new Callback<ServerNewEntryResponse>() {
                     @Override
                     public void success(ServerNewEntryResponse serverNewResponse, Response response) {

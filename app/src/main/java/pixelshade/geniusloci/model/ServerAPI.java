@@ -29,16 +29,19 @@ public interface ServerAPI {
     void postEntry(
             @Query("name") String title,
             @Query("content") String description,
+            @Query("longitude") double longitude,
+            @Query("latitude") double latitude,
             Callback<ServerNewEntryResponse> cb
     );
+
     @GET("/ghost")
     void getAll(
             Callback<ServerListGhostsResponse> cb
     );
-    @GET("/ghost/findNear/{}")
-    void findNear(
-            @Query("lat") String latitutde,
-            @Query("lon") String longtitude,
+    @GET("/ghost/findNear")
+    void getNear(
+            @Query("longitude") double longitude,
+            @Query("latitude") double latitutde,
             Callback<ServerListGhostsResponse> cb
     );
 }

@@ -12,11 +12,13 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pixelshade.geniusloci.model.GhostEntry;
+import pixelshade.geniusloci.model.ServerListGhostsResponse;
 import pixelshade.geniusloci.model.ServerNewEntryResponse;
 import pixelshade.geniusloci.services.ServerApiService;
 import retrofit.Callback;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     EditText uploadDesc;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
 
     private Upload upload; // Upload object containging image and meta data
     private File chosenFile; //chosen file from intent
@@ -92,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+
     @OnClick(R.id.imageview)
     public void onChooseImage() {
         uploadDesc.clearFocus();
@@ -107,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         uploadImage.setImageResource(R.drawable.ic_photo_library_black);
     }
 
+
+
     @OnClick(R.id.fab)
     public void uploadImage() {
     /*
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             GhostEntry entry = createEntry();
             if(entry == null) return;
 
-            new ServerApiService(this).Execute(entry, new UiServerApiCallback());
+            new ServerApiService(this).PostEntry(entry, new UiServerApiCallback());
 
         } else {
             // we are uploading image to imgur
