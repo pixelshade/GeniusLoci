@@ -10,6 +10,7 @@ import pixelshade.geniusloci.helpers.NotificationHelper;
 import pixelshade.geniusloci.imgurmodel.ImageResponse;
 import pixelshade.geniusloci.imgurmodel.ImgurAPI;
 import pixelshade.geniusloci.imgurmodel.Upload;
+import pixelshade.geniusloci.model.DistanceEntry;
 import pixelshade.geniusloci.model.GhostEntry;
 import pixelshade.geniusloci.model.ServerAPI;
 import pixelshade.geniusloci.model.ServerListGhostsResponse;
@@ -33,8 +34,8 @@ public class ServerApiService {
         this.mContext = new WeakReference<>(context);
     }
 
-    public void GetNear(double longitude, double latitude, Callback<List<GhostEntry>> callback) {
-        final Callback<List<GhostEntry>> cb = callback;
+    public void GetNear(double longitude, double latitude, Callback<List<DistanceEntry>> callback) {
+        final Callback<List<DistanceEntry>> cb = callback;
 
         if (!NetworkUtils.isConnected(mContext.get())) {
             //Callback will be called, so we prevent a unnecessary notification
@@ -50,9 +51,9 @@ public class ServerApiService {
         restAdapter.create(ServerAPI.class).getNear(
                 longitude,
                 latitude,
-                new Callback<List<GhostEntry>>() {
+                new Callback<List<DistanceEntry>>() {
                     @Override
-                    public void success(List<GhostEntry> serverEntryListResponse, Response response) {
+                    public void success(List<DistanceEntry> serverEntryListResponse, Response response) {
                         if (cb != null) cb.success(serverEntryListResponse, response);
                         if (response == null) {
                             /*

@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pixelshade.geniusloci.R;
 import pixelshade.geniusloci.helpers.IntentHelper;
+import pixelshade.geniusloci.model.DistanceEntry;
 import pixelshade.geniusloci.model.GhostEntry;
 import pixelshade.geniusloci.model.ServerListGhostsResponse;
 import pixelshade.geniusloci.services.ServerApiService;
@@ -154,15 +155,16 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
         new ServerApiService(this).GetNear(
                 latitude,
                 longtitude,
-                new Callback<List<GhostEntry>>() {
+                new Callback<List<DistanceEntry>>() {
                     @Override
-                    public void success(List<GhostEntry> serverListGhostsResponse, Response response) {
+                    public void success(List<DistanceEntry> serverListGhostsResponse, Response response) {
                         String resp = response.getBody().toString();
                         if (serverListGhostsResponse != null) {
                             resp += "\n";
-                            for (GhostEntry entry : serverListGhostsResponse) {
-                                resp += entry.name + '\n';
-                                resp += entry.content + "\n";
+                            for (DistanceEntry entry : serverListGhostsResponse) {
+                                resp += entry.dis + '\n';
+                                resp += entry.obj.name + '\n';
+                                resp += entry.obj.content + "\n";
                                 resp += "-------------------" + '\n';
                             }
                         }

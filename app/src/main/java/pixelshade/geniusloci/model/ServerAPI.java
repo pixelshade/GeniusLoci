@@ -42,6 +42,6 @@ public interface ServerAPI {
     void getNear(
             @Query("longitude") double longitude,
             @Query("latitude") double latitutde,
-            Callback<List<GhostEntry>> cb
+            Callback<List<DistanceEntry>> cb
     );
 }
