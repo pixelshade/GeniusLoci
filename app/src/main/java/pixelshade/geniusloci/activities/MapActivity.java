@@ -162,7 +162,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                         if (serverListGhostsResponse != null) {
                             resp += "\n";
                             for (DistanceEntry entry : serverListGhostsResponse) {
-                                resp += entry.dis + '\n';
+                                resp += String.format("%.5f",entry.dis) + "\n";
                                 resp += entry.obj.name + '\n';
                                 resp += entry.obj.content + "\n";
                                 resp += "-------------------" + '\n';
