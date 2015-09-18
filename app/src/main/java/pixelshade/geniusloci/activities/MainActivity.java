@@ -45,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
      */
     @Bind(R.id.imageview)
     ImageView uploadImage;
+
     @Bind(R.id.editText_upload_title)
     EditText uploadTitle;
     @Bind(R.id.editText_upload_desc)
     EditText uploadDesc;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+//    @Bind(R.id.toolbar)
+//    Toolbar toolbar;
 
 
     private Upload upload; // Upload object containging image and meta data
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mLatitude = intent.getDoubleExtra("lat",9);
         mLongitude = intent.getDoubleExtra("lon",9);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -97,6 +98,27 @@ public class MainActivity extends AppCompatActivity {
                 .fit()
                 .into(uploadImage);
 
+    }
+
+    @OnClick(R.id.btnShowImage)
+    public void showImagePicker(View v){
+        uploadImage.setVisibility(View.VISIBLE);
+        uploadDesc.setVisibility(View.GONE);
+        uploadTitle.requestFocus();
+    }
+
+    @OnClick(R.id.btnShowText)
+    public void showContentEditBox(View v){
+        uploadDesc.setVisibility(View.VISIBLE);
+        uploadImage.setVisibility(View.GONE);
+        uploadTitle.requestFocus();
+    }
+
+    @OnClick(R.id.btnShowImage)
+    public void showYoutubePicker(View v){
+        uploadDesc.setVisibility(View.GONE);
+        uploadImage.setVisibility(View.GONE);
+        uploadTitle.requestFocus();
     }
 
 
