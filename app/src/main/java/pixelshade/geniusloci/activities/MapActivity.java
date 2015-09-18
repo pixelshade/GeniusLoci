@@ -1,14 +1,17 @@
 package pixelshade.geniusloci.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +26,14 @@ import com.google.android.gms.location.LocationServices;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pixelshade.geniusloci.R;
+import pixelshade.geniusloci.adapters.ListViewGhostAdapter;
 import pixelshade.geniusloci.helpers.IntentHelper;
 import pixelshade.geniusloci.model.DistanceEntry;
 import pixelshade.geniusloci.model.GhostEntry;
@@ -61,6 +66,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     private static int FATEST_INTERVAL = 5000; // 5 sec
     private static int DISPLACEMENT = 10; // 10 meters
 
+    private List<GhostEntry> ghostEntryList;
+
     // UI elements
     @Bind(R.id.lblLocation)
     TextView lblLocation;
@@ -74,6 +81,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     Button btnGetAll;
     @Bind(R.id.responseTV)
     TextView tvResponse;
+    @Bind(R.id.ghostLV)
+    ListView lvGhost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +97,14 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
             buildGoogleApiClient();
 
             createLocationRequest();
+
+
+            ghostEntryList = new ArrayList<GhostEntry>();
+            LayoutInflater inflater = (LayoutInflater)getSystemService
+                    (Context.LAYOUT_INFLATER_SERVICE);
+            ListViewGhostAdapter adapter = new ListViewGhostAdapter(inflater, ghostEntryList);
+            lvGhost.setAdapter(adapter);
+
         }
 
     }
@@ -141,6 +158,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                     }
                 }
                 tvResponse.setText(resp);
+                ghostEntryList = serverListGhostsResponse;
             }
 
             @Override
@@ -161,14 +179,19 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                         String resp = response.getBody().toString();
                         if (serverListGhostsResponse != null) {
                             resp += "\n";
+                            List<GhostEntry> ghostEntries = new ArrayList<GhostEntry>();
                             for (DistanceEntry entry : serverListGhostsResponse) {
                                 resp += String.format("%.5f",entry.dis) + "\n";
                                 resp += entry.obj.name + '\n';
                                 resp += entry.obj.content + "\n";
                                 resp += "-------------------" + '\n';
+                                ghostEntries.add(entry.obj);
                             }
+                            ghostEntryList = ghostEntries;
+                            lvGhost.getAdapter().notify();
                         }
                         tvResponse.setText(resp);
+
                     }
 
                     @Override
