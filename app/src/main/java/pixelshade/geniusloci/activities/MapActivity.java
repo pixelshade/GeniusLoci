@@ -188,7 +188,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                                 ghostEntries.add(entry.obj);
                             }
                             ghostEntryList = ghostEntries;
-                            lvGhost.getAdapter().notify();
+
                         }
                         tvResponse.setText(resp);
 
