@@ -100,21 +100,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    @OnClick(R.id.btnShowImage)
+    @OnClick(R.id.btnShowImage)
     public void showImagePicker(View v){
         uploadImage.setVisibility(View.VISIBLE);
         uploadDesc.setVisibility(View.GONE);
         uploadTitle.requestFocus();
     }
 
-//    @OnClick(R.id.btnShowText)
+    @OnClick(R.id.btnShowText)
     public void showContentEditBox(View v){
         uploadDesc.setVisibility(View.VISIBLE);
         uploadImage.setVisibility(View.GONE);
         uploadTitle.requestFocus();
     }
 
-//    @OnClick(R.id.btnShowImage)
+    @OnClick(R.id.btnShowImage)
     public void showYoutubePicker(View v){
         uploadDesc.setVisibility(View.GONE);
         uploadImage.setVisibility(View.GONE);

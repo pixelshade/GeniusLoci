@@ -29,6 +29,10 @@ public class ListViewGhostAdapter extends BaseAdapter {
         this.ghostEntries = ghostEntries;
     }
 
+    public void setGhostEntries(List<GhostEntry> list){
+        this.ghostEntries = list;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {
@@ -64,7 +68,7 @@ public class ListViewGhostAdapter extends BaseAdapter {
             holder.content.setVisibility(View.INVISIBLE);
 
         } else {
-            holder.content.setText("content");
+            holder.content.setText(ghostEntries.get(position).content);
             holder.content.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.INVISIBLE);
         }

@@ -84,6 +84,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
     @Bind(R.id.ghostLV)
     ListView lvGhost;
 
+    ListViewGhostAdapter lvGhostAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +104,11 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
             ghostEntryList = new ArrayList<GhostEntry>();
             LayoutInflater inflater = (LayoutInflater)getSystemService
                     (Context.LAYOUT_INFLATER_SERVICE);
-            ListViewGhostAdapter adapter = new ListViewGhostAdapter(inflater, ghostEntryList);
-            lvGhost.setAdapter(adapter);
 
+            lvGhostAdapter = new ListViewGhostAdapter(inflater, ghostEntryList);
+
+            lvGhost.setAdapter(lvGhostAdapter);
+            lvGhostAdapter.notifyDataSetChanged();
         }
 
     }
@@ -158,11 +162,13 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                     }
                 }
                 tvResponse.setText(resp);
-                ghostEntryList = serverListGhostsResponse;
+//                ghostEntryList = serverListGhostsResponse;
+                lvGhostAdapter.setGhostEntries(serverListGhostsResponse);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                if(error!=null)
                 tvResponse.setText(error.getCause().getLocalizedMessage());
             }
         });
@@ -187,7 +193,9 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
                                 resp += "-------------------" + '\n';
                                 ghostEntries.add(entry.obj);
                             }
-                            ghostEntryList = ghostEntries;
+//                            ghostEntryList = ghostEntries;
+                            lvGhostAdapter.setGhostEntries(ghostEntries);
+//                            lvGhostAdapter.notifyDataSetChanged();
 
                         }
                         tvResponse.setText(resp);
@@ -196,6 +204,7 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
                     @Override
                     public void failure(RetrofitError error) {
+                        if(error!=null)
                         tvResponse.setText(error.getMessage());
                     }
                 });
