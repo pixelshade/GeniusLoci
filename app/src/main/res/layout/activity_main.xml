@@ -1,21 +1,21 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rootView"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="16dp"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
 
     <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="?attr/actionBarSize"-->
-        <!--android:background="?attr/colorPrimary" />-->
+    <!--android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:background="?attr/colorPrimary" />-->
 
     <!-- Dummy item to prevent TextView from receiving initial focus -->
 
@@ -26,52 +26,51 @@
         tools:context=".MainActivity">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
-            android:gravity="center"
             android:focusableInTouchMode="true"
-            android:id="@+id/linearLayout">
+            android:gravity="center">
 
             <Button
+                android:id="@+id/btnShowText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Text"
-                android:id="@+id/btnShowText" />
+                android:text="Text" />
 
             <Button
+                android:id="@+id/btnShowImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Image"
-                android:id="@+id/btnShowImage" />
+                android:text="Image" />
 
             <Button
+                android:id="@+id/btnShowYoutube"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Youtube"
-                android:id="@+id/btnShowYoutube" />
+                android:text="Youtube" />
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageview"
+            android:id="@+id/selected_imageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-           android:visibility="invisible"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/editText_upload_title"
             android:maxHeight="250dp"
             android:minHeight="250dp"
             android:scaleType="center"
             android:src="@drawable/ic_photo_library_black"
-            android:layout_below="@+id/editText_upload_title"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:visibility="visible" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_title"
             style="@style/DefTextInputLayout"
-            android:layout_below="@+id/imageview"
+            android:layout_below="@+id/selected_imageview"
             android:layout_centerVertical="true">
 
         </android.support.design.widget.TextInputLayout>
@@ -79,17 +78,17 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_desc"
             style="@style/DefTextInputLayout"
-            android:visibility="visible"
+            android:layout_above="@+id/fab"
             android:layout_below="@+id/editText_upload_title"
-            android:layout_above="@+id/fab">
+            android:visibility="visible">
 
             <EditText
                 android:id="@+id/editText_upload_desc"
                 style="@style/DefEditText"
+                android:autoLink="all"
                 android:hint="@string/description"
-                android:visibility="visible"
                 android:inputType="text|textMultiLine"
-                android:autoLink="all" />
+                android:visibility="visible" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.FloatingActionButton
@@ -105,25 +104,25 @@
             app:fabSize="normal" />
 
         <Button
+            android:id="@+id/btnGoToMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cancel"
-            android:id="@+id/btnGoToMap"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="cancel" />
 
         <EditText
             android:id="@+id/editText_upload_title"
             style="@style/DefEditText"
-            android:hint="@string/title"
-            android:inputType="text"
+            android:layout_alignLeft="@+id/selected_imageview"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/selected_imageview"
             android:layout_below="@+id/linearLayout"
             android:layout_margin="16dp"
-            android:layout_alignLeft="@+id/imageview"
-            android:layout_alignStart="@+id/imageview"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:hint="@string/title"
+            android:inputType="text" />
 
     </RelativeLayout>
 

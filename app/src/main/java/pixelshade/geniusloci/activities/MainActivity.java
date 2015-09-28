@@ -1,11 +1,12 @@
 package pixelshade.geniusloci.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,24 +34,26 @@ import pixelshade.geniusloci.imgurmodel.Upload;
 import pixelshade.geniusloci.services.UploadImageService;
 
 
-
 public class MainActivity extends AppCompatActivity {
     public final static String TAG = MainActivity.class.getSimpleName();
 
     private double mLatitude = 9;
     private double mLongitude = 9;
+    private WeakReference<Context> mContext;
 
     /*
       These annotations are for ButterKnife by Jake Wharton
       https://github.com/JakeWharton/butterknife
      */
-    @Bind(R.id.imageview)
+    @Bind(R.id.selected_imageview)
     ImageView uploadImage;
 
     @Bind(R.id.editText_upload_title)
     EditText uploadTitle;
     @Bind(R.id.editText_upload_desc)
     EditText uploadDesc;
+    @Bind(R.id.til_desc)
+    TextInputLayout uploadDescLayout;
 //    @Bind(R.id.toolbar)
 //    Toolbar toolbar;
 
@@ -64,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        mLatitude = intent.getDoubleExtra("lat",9);
-        mLongitude = intent.getDoubleExtra("lon",9);
+        mLatitude = intent.getDoubleExtra("lat", 9);
+        mLongitude = intent.getDoubleExtra("lon", 9);
 //        setSupportActionBar(toolbar);
+        mContext = new WeakReference<Context>(this);
     }
 
     @Override
@@ -101,36 +106,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.btnShowImage)
-    public void showImagePicker(View v){
+    public void showImagePicker(View v) {
         uploadImage.setVisibility(View.VISIBLE);
-        uploadDesc.setVisibility(View.GONE);
+        uploadDescLayout.setVisibility(View.GONE);
         uploadTitle.requestFocus();
+        uploadImage.clearAnimation();
     }
 
     @OnClick(R.id.btnShowText)
-    public void showContentEditBox(View v){
-        uploadDesc.setVisibility(View.VISIBLE);
+    public void showContentEditBox(View v) {
+        uploadDescLayout.setVisibility(View.VISIBLE);
         uploadImage.setVisibility(View.GONE);
+
         uploadTitle.requestFocus();
+        uploadImage.clearAnimation();
     }
 
     @OnClick(R.id.btnShowImage)
-    public void showYoutubePicker(View v){
-        uploadDesc.setVisibility(View.GONE);
+    public void showYoutubePicker(View v) {
+        uploadDescLayout.setVisibility(View.GONE);
         uploadImage.setVisibility(View.GONE);
         uploadTitle.requestFocus();
     }
 
 
     @OnClick(R.id.btnGoToMap)
-    public void goToMap(View v){
+    public void goToMap(View v) {
         Intent intent = new Intent(MainActivity.this, MapActivity.class);
         startActivity(intent);
         finish();
     }
 
 
-    @OnClick(R.id.imageview)
+    @OnClick(R.id.selected_imageview)
     public void onChooseImage() {
         uploadDesc.clearFocus();
         uploadTitle.clearFocus();
@@ -146,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @OnClick(R.id.fab)
     public void uploadImage() {
     /*
@@ -155,35 +162,35 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (chosenFile == null) {
-            GhostEntry entry = createEntry(mLongitude,mLatitude);
-            if(entry == null) return;
+            GhostEntry entry = createEntryFromFields();
+            if (entry == null) return;
 
             new ServerApiService(this).PostEntry(entry, new UiServerApiCallback());
 
         } else {
             // we are uploading image to imgur
             createUpload(chosenFile);
-            new UploadImageService(this).Execute(upload, new UiCallback());
+            new UploadImageService(this).Execute(upload, new UiImgurImageUploadCallback());
         }
     }
 
 
-
-    private GhostEntry createEntry(double longitude, double latitude) {
-        if(uploadTitle.getText().toString().isEmpty()){
+    private GhostEntry createEntryFromFields() {
+        if (uploadTitle.getText().toString().isEmpty()) {
             uploadDesc.setError("Name cannot be empty");
         }
 
-        if(uploadDesc.getText().toString().isEmpty()){
+        if (uploadDesc.getText().toString().isEmpty()) {
             uploadDesc.setError("Content cannot be empty");
         }
-        if(uploadTitle.getText().toString().isEmpty() || uploadDesc.getText().toString().isEmpty()) return null;
+        if (uploadTitle.getText().toString().isEmpty() || uploadDesc.getText().toString().isEmpty())
+            return null;
 
         GhostEntry entry = new GhostEntry(
                 uploadTitle.getText().toString(),
                 uploadDesc.getText().toString(),
-                longitude,
-                latitude
+                mLongitude,
+                mLatitude
         );
 
 
@@ -216,12 +223,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class UiCallback implements Callback<ImageResponse> {
+    private class UiImgurImageUploadCallback implements Callback<ImageResponse> {
 
         @Override
         public void success(ImageResponse imageResponse, Response response) {
+            uploadDesc.setText(imageResponse.data.link);
+            GhostEntry entry = createEntryFromFields();
+            if (entry == null) return;
+            Context context = mContext.get();
 
+            new ServerApiService(context).PostEntry(entry, new UiServerApiCallback());
             clearInput();
+
         }
 
         @Override
