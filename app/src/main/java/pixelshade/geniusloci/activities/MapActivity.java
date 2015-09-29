@@ -109,6 +109,8 @@ public class MapActivity extends AppCompatActivity implements ConnectionCallback
 
             lvGhost.setAdapter(lvGhostAdapter);
             lvGhostAdapter.notifyDataSetChanged();
+
+            togglePeriodicLocationUpdates();
         }
 
     }

@@ -88,7 +88,7 @@
                 android:autoLink="all"
                 android:hint="@string/description"
                 android:inputType="text|textMultiLine"
-                android:visibility="visible" />
+                android:visibility="visible"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.FloatingActionButton
